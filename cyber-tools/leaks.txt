@@ -12,10 +12,10 @@ password: admin123
 pwd=secretpass
 secret: mypassword
 
-# API Keys and tokens (fake examples)
-api_key: sk_test_4eC39HqLyjWDarjtT1zdp7dc
-access_token: "ghp_1234567890abcdef1234567890abcdef12345678"
-API_KEY=ak_live_abcdef123456789012345678901234567890
+# API Keys and tokens (TEST EXAMPLES ONLY - NOT REAL)
+api_key: sk_test_FAKE_KEY_FOR_TESTING_ONLY
+access_token: "ghp_FAKE_TOKEN_FOR_TESTING_PURPOSES"
+API_KEY=ak_test_EXAMPLE_KEY_NOT_REAL
 
 # Hashes (sample MD5, SHA1, SHA256)
 5d41402abc4b2a76b9719d911017c592

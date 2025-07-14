@@ -59,18 +59,19 @@ SCANNING: leaks.txt
   → admin@example.com
   → support@company.org
 
-🔑 POTENTIAL PASSWORDS:
+ POTENTIAL PASSWORDS:
   → admin123
   → secretpass
 
-🔐 API KEYS/TOKENS:
-  → sk_test_4eC39HqLyjWDarjtT1zdp7dc
+ API KEYS/TOKENS:
+  →api_key: sk_test_FAKE_KEY_FOR_TESTING_ONLY
 
 ============================================================
 LEAK DETECTION SUMMARY REPORT
 ============================================================
-⚠️  Total potential leaks found: 15
+  Total potential leaks found: 15
 
+ RISK LEVEL: HIGH
 🚨 RISK LEVEL: HIGH
 
 🛡️  SECURITY RECOMMENDATIONS:
