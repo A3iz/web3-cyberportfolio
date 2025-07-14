@@ -65,9 +65,9 @@ class LeakDetector:
             emails = self.email_pattern.findall(content)
             if emails:
                 self.findings['emails'].extend(emails)
-                print(f"\n{self.colorize('📧 EMAIL ADDRESSES FOUND:', Fore.YELLOW)}")
+                print(f"\n{self.colorize('[EMAIL] EMAIL ADDRESSES FOUND:', Fore.YELLOW)}")
                 for email in set(emails):
-                    print(f"  {self.colorize('→', Fore.RED)} {email}")
+                    print(f"  {self.colorize('->', Fore.RED)} {email}")
             
             # Scan for passwords and secrets
             for pattern_name, pattern in self.password_patterns.items():
@@ -75,52 +75,52 @@ class LeakDetector:
                 if matches:
                     if pattern_name == 'weak_password':
                         self.findings['passwords'].extend(matches)
-                        print(f"\n{self.colorize('🔑 POTENTIAL PASSWORDS:', Fore.RED)}")
+                        print(f"\n{self.colorize('[PASSWORD] POTENTIAL PASSWORDS:', Fore.RED)}")
                         for match in set(matches):
-                            print(f"  {self.colorize('→', Fore.RED)} {match}")
+                            print(f"  {self.colorize('->', Fore.RED)} {match}")
                     elif pattern_name in ['hash_md5', 'hash_sha1', 'hash_sha256']:
                         self.findings['hashes'].extend(matches)
-                        print(f"\n{self.colorize(f'🏷️  {pattern_name.upper()} HASHES:', Fore.MAGENTA)}")
+                        print(f"\n{self.colorize(f'[HASH] {pattern_name.upper()} HASHES:', Fore.MAGENTA)}")
                         for match in set(matches):
-                            print(f"  {self.colorize('→', Fore.RED)} {match[:20]}...")
+                            print(f"  {self.colorize('->', Fore.RED)} {match[:20]}...")
                     elif pattern_name == 'api_key':
                         self.findings['api_keys'].extend(matches)
-                        print(f"\n{self.colorize('🔐 API KEYS/TOKENS:', Fore.RED)}")
+                        print(f"\n{self.colorize('[API] API KEYS/TOKENS:', Fore.RED)}")
                         for match in set(matches):
-                            print(f"  {self.colorize('→', Fore.RED)} {match}")
+                            print(f"  {self.colorize('->', Fore.RED)} {match}")
                     elif pattern_name == 'jwt_token':
                         self.findings['tokens'].extend(matches)
-                        print(f"\n{self.colorize('🎫 JWT TOKENS:', Fore.RED)}")
+                        print(f"\n{self.colorize('[JWT] JWT TOKENS:', Fore.RED)}")
                         for match in set(matches):
-                            print(f"  {self.colorize('→', Fore.RED)} {match[:30]}...")
+                            print(f"  {self.colorize('->', Fore.RED)} {match[:30]}...")
                     elif pattern_name == 'private_key':
-                        print(f"\n{self.colorize('🔑 PRIVATE KEY DETECTED!', Fore.RED)}")
-                        print(f"  {self.colorize('→ CRITICAL SECURITY RISK', Fore.RED)}")
+                        print(f"\n{self.colorize('[PRIVATE] PRIVATE KEY DETECTED!', Fore.RED)}")
+                        print(f"  {self.colorize('-> CRITICAL SECURITY RISK', Fore.RED)}")
             
             # Scan for credit cards
             credit_cards = self.credit_card_pattern.findall(content)
             if credit_cards:
                 self.findings['credit_cards'].extend(credit_cards)
-                print(f"\n{self.colorize('💳 POTENTIAL CREDIT CARDS:', Fore.RED)}")
+                print(f"\n{self.colorize('[CREDIT] POTENTIAL CREDIT CARDS:', Fore.RED)}")
                 for cc in set(credit_cards):
-                    print(f"  {self.colorize('→', Fore.RED)} {cc}")
+                    print(f"  {self.colorize('->', Fore.RED)} {cc}")
             
             # Scan for SSNs
             ssns = self.ssn_pattern.findall(content)
             if ssns:
                 self.findings['ssns'].extend(ssns)
-                print(f"\n{self.colorize('🆔 SOCIAL SECURITY NUMBERS:', Fore.RED)}")
+                print(f"\n{self.colorize('[SSN] SOCIAL SECURITY NUMBERS:', Fore.RED)}")
                 for ssn in set(ssns):
-                    print(f"  {self.colorize('→', Fore.RED)} {ssn}")
+                    print(f"  {self.colorize('->', Fore.RED)} {ssn}")
             
             # Scan for phone numbers
             phones = self.phone_pattern.findall(content)
             if phones:
                 formatted_phones = [f"({match[0]}) {match[1]}-{match[2]}" for match in phones]
                 self.findings['phones'].extend(formatted_phones)
-                print(f"\n{self.colorize('📞 PHONE NUMBERS:', Fore.YELLOW)}")
+                print(f"\n{self.colorize('[PHONE] PHONE NUMBERS:', Fore.YELLOW)}")
                 for phone in set(formatted_phones):
-                    print(f"  {self.colorize('→', Fore.YELLOW)} {phone}")
+                    print(f"  {self.colorize('->', Fore.YELLOW)} {phone}")
                     
         except Exception as e:
             print(f"{self.colorize(f'Error scanning {filepath}: {str(e)}', Fore.RED)}")
@@ -134,9 +134,9 @@ class LeakDetector:
         total_findings = sum(len(v) for v in self.findings.values())
         
         if total_findings == 0:
-            print(f"{self.colorize('✅ No potential data leaks detected!', Fore.GREEN)}")
+            print(f"{self.colorize('[OK] No potential data leaks detected!', Fore.GREEN)}")
         else:
-            print(f"{self.colorize(f'⚠️  Total potential leaks found: {total_findings}', Fore.YELLOW)}")
+            print(f"{self.colorize(f'[WARNING] Total potential leaks found: {total_findings}', Fore.YELLOW)}")
             
             for category, items in self.findings.items():
                 if items:
@@ -150,10 +150,10 @@ class LeakDetector:
                 risk_level = "MEDIUM"
                 
             color = Fore.GREEN if risk_level == "LOW" else Fore.YELLOW if risk_level == "MEDIUM" else Fore.RED
-            print(f"\n{self.colorize(f'🚨 RISK LEVEL: {risk_level}', color)}")
+            print(f"\n{self.colorize(f'[RISK] RISK LEVEL: {risk_level}', color)}")
             
             # Recommendations
-            print(f"\n{self.colorize('🛡️  SECURITY RECOMMENDATIONS:', Fore.CYAN)}")
+            print(f"\n{self.colorize('[SECURITY] SECURITY RECOMMENDATIONS:', Fore.CYAN)}")
             if self.findings['passwords']:
                 print("  • Remove hardcoded passwords immediately")
             if self.findings['api_keys']:
@@ -169,7 +169,7 @@ class LeakDetector:
 def main():
     detector = LeakDetector()
     
-    print(f"{detector.colorize('🔍 LEAK DETECTOR - Cybersecurity Tool', Fore.CYAN)}")
+    print(f"{detector.colorize('LEAK DETECTOR - Cybersecurity Tool', Fore.CYAN)}")
     print(f"{detector.colorize('Author: Abdulaziz Althari', Fore.CYAN)}")
     print(f"{detector.colorize('-' * 50, Fore.CYAN)}")
     
@@ -181,7 +181,7 @@ def main():
         filepath = Path(__file__).parent / "leaks.txt"
     
     if not os.path.exists(filepath):
-        print(f"{detector.colorize(f'❌ File not found: {filepath}', Fore.RED)}")
+        print(f"{detector.colorize(f'[ERROR] File not found: {filepath}', Fore.RED)}")
         print(f"Usage: python {sys.argv[0]} <filepath>")
         print(f"Or create a 'leaks.txt' file in the same directory")
         return
