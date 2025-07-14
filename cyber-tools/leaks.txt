@@ -1,0 +1,52 @@
+# Sample Data for Leak Detection Testing
+# This file contains various types of potentially sensitive information for testing purposes
+# DO NOT use real credentials or sensitive data in production!
+
+# Email addresses
+Contact us at: admin@example.com
+Support team: support@company.org
+Developer email: john.doe@techcorp.net
+
+# Weak password examples
+password: admin123
+pwd=secretpass
+secret: mypassword
+
+# API Keys and tokens (fake examples)
+api_key: sk_test_4eC39HqLyjWDarjtT1zdp7dc
+access_token: "ghp_1234567890abcdef1234567890abcdef12345678"
+API_KEY=ak_live_abcdef123456789012345678901234567890
+
+# Hashes (sample MD5, SHA1, SHA256)
+5d41402abc4b2a76b9719d911017c592
+356a192b7913b04c54574d18c28d46e6395428ab
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+
+# JWT Token (sample structure)
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+
+# Credit card (test numbers - not real)
+4111-1111-1111-1111
+5555 5555 5555 4444
+
+# Phone numbers
+Customer service: (555) 123-4567
+Technical support: +1-800-555-0199
+
+# Social Security Numbers (fake format)
+123-45-6789
+987-65-4321
+
+# Private key header (sample - not a real key)
+-----BEGIN RSA PRIVATE KEY-----
+Sample text here (not actual key content)
+-----END RSA PRIVATE KEY-----
+
+# Database connections
+db_password: supersecret123
+mongodb://admin:password123@localhost:27017/mydb
+
+# Configuration files
+DEBUG=True
+SECRET_KEY=django-insecure-abc123def456ghi789
+DATABASE_URL=postgresql://user:pass@localhost/db

@@ -1,0 +1,147 @@
+name: Code Quality and Security Checks
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  python-quality:
+    name: Python Code Quality
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pylint colorama
+        
+    - name: Run pylint on Python files
+      run: |
+        find . -name "*.py" -exec pylint {} \; || true
+        
+    - name: Run security scan on Python files
+      run: |
+        # Run our custom leak detector on Python files
+        find . -name "*.py" -exec python cyber-tools/leak_detector.py {} \; || true
+
+  solidity-quality:
+    name: Solidity Code Quality
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Install Solidity tools
+      run: |
+        npm install -g solhint
+        npm install -g @solidity-parser/parser
+        
+    - name: Run solhint on Solidity files
+      run: |
+        find . -name "*.sol" -exec solhint {} \; || true
+        
+    - name: Compile Solidity contracts
+      run: |
+        # Basic syntax check using solc if available
+        which solc && find . -name "*.sol" -exec solc --bin {} \; || echo "solc not available, skipping compilation"
+
+  security-scan:
+    name: Security and Leak Detection
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python for leak detection
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+        
+    - name: Install leak detector dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install colorama
+        
+    - name: Run comprehensive leak detection
+      run: |
+        echo "Running leak detection on all text files..."
+        python cyber-tools/leak_detector.py README.md || true
+        find . -name "*.md" -not -path "./.git/*" -exec python cyber-tools/leak_detector.py {} \; || true
+        find . -name "*.txt" -not -path "./.git/*" -exec python cyber-tools/leak_detector.py {} \; || true
+        find . -name "*.yml" -not -path "./.git/*" -exec python cyber-tools/leak_detector.py {} \; || true
+        find . -name "*.yaml" -not -path "./.git/*" -exec python cyber-tools/leak_detector.py {} \; || true
+        
+    - name: Check for hardcoded secrets
+      run: |
+        echo "Checking for common secret patterns..."
+        # Check for common secret patterns in all files
+        grep -r -i "password\|secret\|api_key\|private_key" . --exclude-dir=.git --exclude="*.md" --exclude="leaks.txt" || echo "No obvious secrets found"
+
+  documentation-check:
+    name: Documentation Quality
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Check README files exist
+      run: |
+        echo "Checking for required documentation..."
+        test -f README.md && echo "✅ Main README.md exists" || echo "❌ Main README.md missing"
+        test -f smart-contracts/README.md && echo "✅ Smart contracts README.md exists" || echo "❌ Smart contracts README.md missing"
+        test -f cyber-tools/README.md && echo "✅ Cyber tools README.md exists" || echo "❌ Cyber tools README.md missing"
+        test -f docs/overview.md && echo "✅ Overview documentation exists" || echo "❌ Overview documentation missing"
+        
+    - name: Check documentation completeness
+      run: |
+        echo "Checking documentation content..."
+        grep -q "Abdulaziz Althari" README.md && echo "✅ Author attribution found" || echo "❌ Author attribution missing"
+        grep -q "Web3" README.md && echo "✅ Web3 mentioned in README" || echo "❌ Web3 not mentioned in README"
+        grep -q "Cybersecurity\|Cyber" README.md && echo "✅ Cybersecurity mentioned in README" || echo "❌ Cybersecurity not mentioned in README"
+
+  project-structure:
+    name: Project Structure Validation
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Validate project structure
+      run: |
+        echo "Validating project structure..."
+        
+        # Check main folders exist
+        test -d smart-contracts && echo "✅ smart-contracts folder exists" || echo "❌ smart-contracts folder missing"
+        test -d cyber-tools && echo "✅ cyber-tools folder exists" || echo "❌ cyber-tools folder missing"
+        test -d docs && echo "✅ docs folder exists" || echo "❌ docs folder missing"
+        test -d .github/workflows && echo "✅ .github/workflows folder exists" || echo "❌ .github/workflows folder missing"
+        
+        # Check key files exist
+        test -f smart-contracts/SimpleVoting.sol && echo "✅ SimpleVoting.sol exists" || echo "❌ SimpleVoting.sol missing"
+        test -f cyber-tools/leak_detector.py && echo "✅ leak_detector.py exists" || echo "❌ leak_detector.py missing"
+        test -f cyber-tools/leaks.txt && echo "✅ leaks.txt exists" || echo "❌ leaks.txt missing"
+        test -f docs/overview.md && echo "✅ overview.md exists" || echo "❌ overview.md missing"
+        
+        echo "Project structure validation complete!"
+
+# Note: This workflow uses '|| true' to prevent failures from stopping the workflow
+# In a production environment, you might want to remove this to enforce quality standards
